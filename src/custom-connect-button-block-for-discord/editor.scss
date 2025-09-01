@@ -56,18 +56,18 @@
 }
 
 // Block styles
-.aio-discord-connect-block {
+.dro-ccbb-connect-block {
 	display: flex;
 	flex-direction: column;
 	gap: 0px;
 	max-width: 600px;
 	margin: 0 auto;
 	padding: 10px;
-	.aio-discord-connect-buttons {
+	.dro-ccbb-connect-buttons {
 		display: flex;
 		flex-direction: row;
 		gap: 10px;
-		button.aio-discord-connect-button {
+		button.dro-ccbb-connect-button {
 			display: flex;
 			align-items: center;
 			gap: 7px;
@@ -83,9 +83,18 @@
 			}
 		}
 	}
-	p{
+	p {
 		margin: 0;
 		font-size: 16px;
 		font-weight: 500;
+	}
+}
+
+// Block Toolbar button custom button icon
+.components-toolbar-group {
+	.components-toolbar-button.dro-ccbb-preview-toggle.is-pressed {
+		&::before {
+			background: transparent;
+		}
 	}
 }

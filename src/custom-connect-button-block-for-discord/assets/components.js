@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
-const textDomain = 'dro-aio-discord-block';
+const textDomain = 'custom-connect-button-block-for-discord';
 
 const DiscordIcon = () => (
 	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

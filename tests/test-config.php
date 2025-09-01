@@ -2,7 +2,7 @@
 /**
  * Test configuration for Discord Service tests.
  *
- * @package Dro\AIODiscordBlock\Tests
+ * @package CustomConnectButtonBlock\Tests
  */
 
 // Define test constants
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once __DIR__ . '/helpers/class-discord-service-mock-helper.php';
 
 // Load the abstract class being tested
-require_once __DIR__ . '/../includes/abstracts/class-dro-aio-discord-service.php';
+require_once __DIR__ . '/../includes/abstracts/class-dro-ccbb-service.php';
 
 /**
  * Test configuration class.
@@ -209,7 +209,7 @@ class Discord_Service_Test_Config {
 
 		// Reset any static variables
 		if ( class_exists( 'Dro\\AIODiscordBlock\\Tests\\Helpers\\Discord_Service_Mock_Helper' ) ) {
-			\Dro\AIODiscordBlock\Tests\Helpers\Discord_Service_Mock_Helper::reset();
+			\CustomConnectButtonBlock\Tests\Helpers\Discord_Service_Mock_Helper::reset();
 		}
 
 		// Clear any cached data

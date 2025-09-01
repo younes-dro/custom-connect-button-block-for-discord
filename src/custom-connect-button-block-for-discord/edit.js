@@ -21,10 +21,10 @@ import { DiscordIcon, PlayIcon, StopIcon, LivePreviewBadge } from './assets/comp
 import { ServiceIconSVG } from './assets/CustomServiceIcon';
 import './editor.scss';
 
-const textDomain = 'all-in-one-discord-connect-block';
+const textDomain = 'custom-connect-button-block-for-discord';
 
 /**
- * Edit function for the All In One Discord Connect Block.
+ * Edit function for the Custom connect button block for Discord.
  *
  * @param {Object} props - The block properties.
  * @param {Object} props.attributes - The block attributes.
@@ -48,9 +48,9 @@ export default function Edit({ attributes, setAttributes }) {
 		isLivePreview = false,
 	} = attributes;
 
-	// const blockProps = { ...useBlockProps(), className: 'aio-discord-connect-block' };
+	// const blockProps = { ...useBlockProps(), className: 'dro-ccbb-connect-block' };
 	const blockProps = useBlockProps({
-		className: 'aio-discord-connect-block',
+		className: 'dro-ccbb-connect-block',
 	});
 
 	const [serviceIconURL, setServiceIconURL] = useState(null);
@@ -64,7 +64,7 @@ export default function Edit({ attributes, setAttributes }) {
 				setServiceIconLoading(true);
 				setServiceIconError(null);
 				const response = await apiFetch({
-					path: '/aio-discord/v1/icons',
+					path: droDiscordApi.endpoints.icons
 				});
 
 				if (response.success && response.data.icon_url) {
@@ -92,7 +92,7 @@ export default function Edit({ attributes, setAttributes }) {
 		<div className="live-preview-wrapper" style={{ position: 'relative' }}>
 			<LivePreviewBadge />
 			<ServerSideRender
-				block="dro-block/all-in-one-discord-connect-block"
+				block="dro-block/custom-connect-button-block-for-discord"
 				attributes={attributes}
 				LoadingResponseComponent={() => (
 					<div style={{ textAlign: 'center', padding: '20px' }}>
@@ -120,14 +120,14 @@ export default function Edit({ attributes, setAttributes }) {
 	const renderEditUI = () => (
 		<>
 			{/* <img src={serviceIconURL} /> */}
-			<div className='aio-discord-connect-buttons'>
+			<div className='dro-ccbb-connect-buttons'>
 
 				<button
 					style={{
 						backgroundColor: connectButtonBgColor,
 						color: connectButtonTextColor
 					}}
-					className="aio-discord-connect-button"
+					className="dro-ccbb-connect-button"
 				>
 					<RichText
 						tagName="span"
@@ -142,7 +142,7 @@ export default function Edit({ attributes, setAttributes }) {
 						backgroundColor: disconnectButtonBgColor,
 						color: disconnectButtonTextColor
 					}}
-					className="aio-discord-connect-button"
+					className="dro-ccbb-connect-button"
 				>
 					<RichText
 						tagName="span"
@@ -182,6 +182,7 @@ export default function Edit({ attributes, setAttributes }) {
 						icon={isLivePreview ? StopIcon : PlayIcon}
 						label={isLivePreview ? __('Back to Edit', textDomain) : __('Live Preview', textDomain)}
 						isPressed={isLivePreview}
+						className="dro-ccbb-preview-toggle"
 						onClick={() => setAttributes({ isLivePreview: !isLivePreview })}
 					/>
 					<ToolbarButton

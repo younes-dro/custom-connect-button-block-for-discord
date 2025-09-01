@@ -1,4 +1,4 @@
-# All-in-One Discord Connect Block
+# Custom Connect Button Block for Discord
 
 ## 🧩 Features
 
@@ -18,10 +18,10 @@
 
 ## 🚀 Installation
 
-1. Upload the plugin files to the `/wp-content/plugins/all-in-one-discord-connect-block/` directory, or install it directly through the WordPress admin dashboard.
-2. Activate the plugin through the “Plugins” menu in WordPress.
+1. Upload the plugin files to the `/wp-content/plugins/'custom-connect-button-block-for-discord'/` directory, or install it directly through the WordPress admin dashboard.
+2. Activate the plugin through the "Plugins" menu in WordPress.
 3. Edit a post or page using the Gutenberg Block Editor.
-4. Search for **“Discord Connect”** block and insert it.
+4. Search for **"Connect Button for Discord"** block and insert it.
 5. Use the block settings panel to customize appearance, behavior, and messages.
 
 ---
@@ -59,6 +59,6 @@ This plugin supports out-of-the-box integrations with:
   - Paid Memberships Pro
   - MemberPress
   - Ultimate Member
-	- Tutor LMS
+  - Tutor LMS
 
 ---

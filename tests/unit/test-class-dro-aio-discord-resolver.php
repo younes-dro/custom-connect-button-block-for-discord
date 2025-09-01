@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-use Dro\AIODiscordBlock\includes\Dro_AIO_Discord_Resolver as Discord_Resolver;
+use Dro\CustomConnectButtonBlock\includes\Dro_CCBB_Resolver as Resolver;
 
-class Dro_AIO_Discord_Resolver_Test extends WP_UnitTestCase {
+class Dro_AIO_Resolver_Test extends WP_UnitTestCase {
 
     public function set_up() {
         parent::set_up();
     }
 
     public function tear_down() {
-        Discord_Resolver::reset(); // Clear cached service
+        Resolver::reset(); // Clear cached service
         delete_option( 'active_plugins' );
         parent::tear_down();
     }
@@ -43,13 +43,13 @@ class Dro_AIO_Discord_Resolver_Test extends WP_UnitTestCase {
      */
     public function test_resolve( string $plugin, string $expected_class ) {
         // Reset service resolver to clear static state
-        Discord_Resolver::reset();
+        Resolver::reset();
 
         // Activate only the plugin being tested
         update_option( 'active_plugins', [ $plugin ] );
 
         // Resolve the Discord service
-        $service = Discord_Resolver::resolve();
+        $service = Resolver::resolve();
 
         // Assert that the resolved instance matches the expected class
         $this->assertInstanceOf( $expected_class, $service );

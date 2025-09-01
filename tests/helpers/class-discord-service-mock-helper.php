@@ -2,10 +2,10 @@
 /**
  * Mock helper for Discord Service tests.
  *
- * @package Dro\AIODiscordBlock\Tests\Helpers
+ * @package CustomConnectButtonBlock\Tests\Helpers
  */
 
-namespace Dro\AIODiscordBlock\Tests\Helpers;
+namespace CustomConnectButtonBlock\Tests\Helpers;
 
 /**
  * Mock helper class for Discord Service testing.

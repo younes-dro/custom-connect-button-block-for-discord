@@ -1,9 +1,9 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "dro-block/all-in-one-discord-connect-block",
+	"name": "dro-block/custom-connect-button-block-for-discord",
 	"version": "1.0.0",
-	"title": "AIO Discord Connect Block",
+	"title": "Connect Button for Discord",
 	"category": "widgets",
 	"description": "Displays a customizable \"Connect to Discord\" button",
 	"example": {},
@@ -52,7 +52,7 @@
 	"supports": {
 		"html": false
 	},
-	"textdomain": "all-in-one-discord-connect-block",
+	"textdomain": "'custom-connect-button-block-for-discord'",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css",
