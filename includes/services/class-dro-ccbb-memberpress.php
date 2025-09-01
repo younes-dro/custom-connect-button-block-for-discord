@@ -4,25 +4,26 @@
  * MemberPress Discord Service Implementation
  *
  * This class handles the MemberPress service for Discord integration.
- * It implements the Dro_AIO_Discord_Service_Interface and extends the abstract service.
+ * It implements the Dro_CCBB_Service_Interface and extends the abstract service.
  *
  * PHP version 7.4+
  *
- * @package  Dro\AIODiscordBlock\Services
+ * @package  CustomConnectButtonBlock\Services
  * @category Plugin
  * @author   Younes DRO <younesdro@gmail.com>
  * @license  GPL-2.0-or-later https://www.gnu.org/licenses/gpl-2.0.html
  * @version  GIT: 1.0.0
- * @link     https://github.com/younes-dro/all-in-one-discord-connect-block
+ * @link     https://github.com/younes-dro/'custom-connect-button-block-for-discord'
  * @since    1.0.0
  */
 
 declare(strict_types=1);
 
-namespace Dro\AIODiscordBlock\includes\Services;
+namespace Dro\CustomConnectButtonBlock\includes\Services;
 
-use Dro\AIODiscordBlock\includes\Abstracts\Dro_AIO_Discord_Service as Discord_Service;
-use Dro\AIODiscordBlock\includes\Interfaces\Dro_AIO_Discord_Service_Interface as Discord_Service_Interface;
+use Dro\CustomConnectButtonBlock\includes\Abstracts\Dro_CCBB_Service as Abstract_Service;
+use Dro\CustomConnectButtonBlock\includes\Interfaces\Dro_CCBB_Service_Interface as Service_Interface;
+use Dro\CustomConnectButtonBlock\includes\helpers\Dro_CCBB_Helper as Helper;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,14 +37,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * plugin status, retrieve user membership data, and manage Discord roles.
  *
  * @category Plugin
- * @package  Dro\AIODiscordBlock\Services
+ * @package  CustomConnectButtonBlock\Services
  * @author   Younes DRO <younesdro@gmail.com>
  * @license  GPL-2.0-or-later https://www.gnu.org/licenses/gpl-2.0.html
  * @version  Release: 1.0.0
- * @link     https://github.com/younes-dro/all-in-one-discord-connect-block
+ * @link     https://github.com/younes-dro/'custom-connect-button-block-for-discord'
  * @since    1.0.0
  */
-class Dro_AIO_Discord_Memberpress extends Discord_Service implements Discord_Service_Interface {
+class Dro_CCBB_Memberpress extends Abstract_Service implements Service_Interface {
 
 		/**
 		 * The singleton instance of the class.
@@ -76,7 +77,7 @@ class Dro_AIO_Discord_Memberpress extends Discord_Service implements Discord_Ser
 	 * @access private
 	 * @var string
 	 */
-	private const PLUGIN_ICON = DRO_AIO_DISCORD_BLOCK_URL . '/assets/' . self::SERVICE_NAME . '.gif';
+	private const PLUGIN_ICON = DRO_CCBB_URL . '/assets/' . self::SERVICE_NAME . '.gif';
 
 	/**
 	 * Maps Discord user data properties to their corresponding WordPress user meta keys.
@@ -117,10 +118,10 @@ class Dro_AIO_Discord_Memberpress extends Discord_Service implements Discord_Ser
 
 		$cloning_message = sprintf(
 			/* translators: %s is the class name that cannot be cloned */
-			esc_html__( 'You cannot clone instance of %s', 'all-in-one-discord-connect-block' ),
+			esc_html__( 'You cannot clone instance of %s', 'custom-connect-button-block-for-discord' ),
 			get_class( $this )
 		);
-		_doing_it_wrong( __FUNCTION__, esc_html( $cloning_message ), esc_html( DRO_AIO_DISCORD_BLOCK_VERSION ) );
+		_doing_it_wrong( __FUNCTION__, esc_html( $cloning_message ), esc_html( DRO_CCBB_VERSION ) );
 	}
 	/**
 	 * Prevent unserializing of the instance.
@@ -131,10 +132,10 @@ class Dro_AIO_Discord_Memberpress extends Discord_Service implements Discord_Ser
 
 		$unserializing_message = sprintf(
 			/* translators: %s is the class name that cannot be unserialized */
-			esc_html__( 'You cannot unserialize instance of %s', 'all-in-one-discord-connect-block' ),
+			esc_html__( 'You cannot unserialize instance of %s', 'custom-connect-button-block-for-discord' ),
 			get_class( $this )
 		);
-		_doing_it_wrong( __FUNCTION__, esc_html( $unserializing_message ), esc_html( DRO_AIO_DISCORD_BLOCK_VERSION ) );
+		_doing_it_wrong( __FUNCTION__, esc_html( $unserializing_message ), esc_html( DRO_CCBB_VERSION ) );
 	}
 
 	/**
@@ -143,9 +144,9 @@ class Dro_AIO_Discord_Memberpress extends Discord_Service implements Discord_Ser
 	 * Ensures that only one instance of the service is created and reused.
 	 * This method is typically used to access the service without directly instantiating it.
 	 *
-	 * @return Discord_Service_Interface The singleton instance of the service.
+	 * @return Service_Interface The singleton instance of the service.
 	 */
-	public static function get_instance(): Discord_Service_Interface {
+	public static function get_instance(): Service_Interface {
 		return self::$instance ?? new self();
 	}
 
@@ -258,7 +259,7 @@ class Dro_AIO_Discord_Memberpress extends Discord_Service implements Discord_Ser
 			);
 			$html .= $this->get_user_roles( $roleWillAssignText, $user_id );
 		} else {
-			$html .= '<p>' . esc_html__( 'You must be a member to connect to Discord.', 'all-in-one-discord-connect-block' ) . '</p>';
+			$html .= '<p>' . esc_html__( 'You must be a member to connect to Discord.', 'custom-connect-button-block-for-discord' ) . '</p>';
 		}
 
 		return $html;
@@ -276,10 +277,11 @@ class Dro_AIO_Discord_Memberpress extends Discord_Service implements Discord_Ser
 	 */
 	private function get_connect_button( string $button_bg_color, string $button_text_color, string $button_text ): string {
 		return sprintf(
-			'<a href="?action=memberpress-discord-login" class="dro-aio-discord-connect-button" style="background-color:%s; color:%s;">%s <i class="fab fa-discord"></i></a>',
+			'<a href="?action=memberpress-discord-login" class="dro-ccbb-connect-button" style="background-color:%s; color:%s;">%s <i>%s</i></a>',
 			esc_attr( $button_bg_color ),
 			esc_attr( $button_text_color ),
-			esc_html( $button_text )
+			esc_html( $button_text ),
+			wp_kses( Helper::get_discord_icon(), Helper::get_allowed_html() )
 		);
 	}
 
@@ -299,11 +301,12 @@ class Dro_AIO_Discord_Memberpress extends Discord_Service implements Discord_Ser
 		wp_enqueue_style( 'connect-memberpress-discord-add-onpublic_css' );
 
 		$button_html = sprintf(
-			'<a href="#" class="ets-btn btn-disconnect" id="memberpress-disconnect-discord" data-user-id="%s" style="background-color:%s; color:%s;">%s <i class="fab fa-discord"></i></a>',
+			'<a href="#" class="ets-btn btn-disconnect" id="memberpress-disconnect-discord" data-user-id="%s" style="background-color:%s; color:%s;">%s <i>%s</i></a>',
 			esc_attr( $user_id ),
 			esc_attr( $button_bg_color ),
 			esc_attr( $button_text_color ),
-			esc_html( $button_text )
+			esc_html( $button_text ),
+			wp_kses( Helper::get_discord_icon(), Helper::get_allowed_html() )
 		);
 
 		return $button_html . '<span class="ets-spinner"></span>';
@@ -342,7 +345,7 @@ class Dro_AIO_Discord_Memberpress extends Discord_Service implements Discord_Ser
 		$default_role                         = (int) sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$all_roles                            = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
-		$roles_color                          = unserialize( get_option( 'ets_memberpress_discord_roles_color' ) );
+		$roles_color                          = maybe_unserialize( get_option( 'ets_memberpress_discord_roles_color' ) );
 		$active_memberships                   = ets_memberpress_discord_get_active_memberships( $user_id );
 		$mapped_role_ids                      = array();
 

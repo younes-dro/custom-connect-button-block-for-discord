@@ -1,8 +1,8 @@
 <?php
 /**
- * All In One Discord Connect Block
+ * Custom connect button block for Discord
  *
- * @package   All In One Discord Connect Block
+ * @package   Custom connect button block for Discord
  * @author    Younes DRO <younesdro@gmail.com>
  * @since 1.0.0
  * @license  GPL-2.0-or-later https://www.gnu.org/licenses/gpl-2.0.html
@@ -10,19 +10,19 @@
 
 declare(strict_types=1);
 
-namespace Dro\AIODiscordBlock\includes;
+namespace Dro\CustomConnectButtonBlock\includes;
 
-use Dro\AIODiscordBlock\includes\Dro_AIO_Discord_Resolver as Discord_Resolver;
-use Dro\AIODiscordBlock\includes\Dro_AIO_Discord_Rest_Api as Discord_Rest_Api;
+use Dro\CustomConnectButtonBlock\includes\Dro_CCBB_Resolver as Resolver;
+use Dro\CustomConnectButtonBlock\includes\Dro_CCBB_Rest_Api as Discord_Rest_Api;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Main class for All In One Discord Connect Block.
+ * Main class for Custom connect button block for Discord.
  */
-class Dro_AIO_Discord {
+class Dro_CCBB_Main {
 
 	/**
 	 * The singleton instance of the class.
@@ -48,7 +48,7 @@ class Dro_AIO_Discord {
 	 * @return void
 	 */
 	public function plugin_loaded() {
-		Discord_Resolver::resolve();
+		Resolver::resolve();
 		Discord_Rest_Api::get_instance();
 	}
 	/**
@@ -69,10 +69,10 @@ class Dro_AIO_Discord {
 
 		$cloning_message = sprintf(
 			/* translators: %s is the class name that cannot be cloned */
-			esc_html__( 'You cannot clone instance of %s', 'all-in-one-discord-connect-block' ),
+			esc_html__( 'You cannot clone instance of %s', 'custom-connect-button-block-for-discord' ),
 			get_class( $this )
 		);
-		_doing_it_wrong( __FUNCTION__, esc_html( $cloning_message ), esc_html( DRO_AIO_DISCORD_BLOCK_VERSION ) );
+		_doing_it_wrong( __FUNCTION__, esc_html( $cloning_message ), esc_html( DRO_CCBB_VERSION ) );
 	}
 	/**
 	 * Prevent unserializing of the instance.

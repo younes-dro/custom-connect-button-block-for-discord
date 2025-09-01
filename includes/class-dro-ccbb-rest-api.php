@@ -1,12 +1,11 @@
 <?php
-
 /**
  * Discord REST API Handler
  *
  * This class handles REST API endpoints for retrieving Discord service information
  * including service icons and other related data from active Discord add-ons.
  *
- * @package    Dro\AIODiscordBlock
+ * @package    CustomConnectButtonBlock
  * @subpackage includes
  * @since      1.0.0
  * @author     Younes DRO<younesdro@gmail.com>
@@ -14,29 +13,29 @@
 
 declare(strict_types=1);
 
-namespace Dro\AIODiscordBlock\includes;
+namespace Dro\CustomConnectButtonBlock\includes;
 
-use Dro\AIODiscordBlock\includes\Dro_AIO_Discord_Resolver as Discord_Resolver;
-use Dro\AIODiscordBlock\includes\Interfaces\Dro_AIO_Discord_Service_Interface as Discord_Service_Interface;
+use Dro\CustomConnectButtonBlock\includes\Dro_CCBB_Resolver as Resolver;
+use Dro\CustomConnectButtonBlock\includes\Interfaces\Dro_CCBB_Service_Interface as Service_Interface;
 use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 
-// Prevent direct access
+// Prevent direct access.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
 /**
- * Class Dro_AIO_Discord_Rest_Api
+ * Class Dro_CCBB_Rest_Api
  *
  * Handles REST API endpoints for Discord service integration.
  * Implements singleton pattern to ensure only one instance exists.
  *
  * @since 1.0.0
  */
-class Dro_AIO_Discord_Rest_Api {
+class Dro_CCBB_Rest_Api {
 
 	/**
 	 * The singleton instance of the class.
@@ -52,7 +51,7 @@ class Dro_AIO_Discord_Rest_Api {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	private const API_NAMESPACE = 'aio-discord/v1';
+	private const API_NAMESPACE = 'dro-ccbb/v1';
 
 	/**
 	 * Private constructor to prevent direct instantiation.
@@ -82,10 +81,10 @@ class Dro_AIO_Discord_Rest_Api {
 	public function __clone() {
 		$cloning_message = sprintf(
 			/* translators: %s is the class name that cannot be cloned */
-			esc_html__( 'You cannot clone instance of %s', 'all-in-one-discord-connect-block' ),
+			esc_html__( 'You cannot clone instance of %s', 'custom-connect-button-block-for-discord' ),
 			get_class( $this )
 		);
-		_doing_it_wrong( __FUNCTION__, esc_html( $cloning_message ), esc_html( DRO_AIO_DISCORD_BLOCK_VERSION ) );
+		_doing_it_wrong( __FUNCTION__, esc_html( $cloning_message ), esc_html( DRO_CCBB_VERSION ) );
 	}
 
 	/**
@@ -97,10 +96,10 @@ class Dro_AIO_Discord_Rest_Api {
 	public function __wakeup() {
 		$unserializing_message = sprintf(
 			/* translators: %s is the class name that cannot be unserialized */
-			esc_html__( 'You cannot unserialize instance of %s', 'all-in-one-discord-connect-block' ),
+			esc_html__( 'You cannot unserialize instance of %s', 'custom-connect-button-block-for-discord' ),
 			get_class( $this )
 		);
-		_doing_it_wrong( __FUNCTION__, esc_html( $unserializing_message ), esc_html( DRO_AIO_DISCORD_BLOCK_VERSION ) );
+		_doing_it_wrong( __FUNCTION__, esc_html( $unserializing_message ), esc_html( DRO_CCBB_VERSION ) );
 	}
 
 	/**
@@ -142,7 +141,7 @@ class Dro_AIO_Discord_Rest_Api {
 	 * @return array
 	 */
 	private function get_icons_args(): array {
-		// No arguments needed for now - returns official icon URL directly
+		// No arguments needed for now - returns official icon URL directly.
 		return array();
 	}
 
@@ -152,15 +151,15 @@ class Dro_AIO_Discord_Rest_Api {
 	 * Verifies nonce for Gutenberg block requests and ensures user has appropriate capabilities.
 	 *
 	 * @since 1.0.0
-	 * @param WP_REST_Request $request The REST request object
-	 * @return bool|WP_Error True if allowed, WP_Error if not
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return bool|WP_Error True if allowed, WP_Error if not.
 	 */
 	public function check_permissions( WP_REST_Request $request ) {
 
 		if ( ! current_user_can( 'read' ) ) {
 			return new WP_Error(
 				'rest_forbidden',
-				__( 'You must be logged in to access this endpoint.', 'all-in-one-discord-connect-block' ),
+				esc_html__( 'You must be logged in to access this endpoint.', 'custom-connect-button-block-for-discord' ),
 				array( 'status' => 403 )
 			);
 		}
@@ -174,15 +173,21 @@ class Dro_AIO_Discord_Rest_Api {
 		if ( empty( $nonce ) ) {
 			return new WP_Error(
 				'missing_nonce',
-				__( 'Missing security token. Please refresh the page and try again.', 'all-in-one-discord-connect-block' ),
+				esc_html__( 'Missing security token. Please refresh the page and try again.', 'custom-connect-button-block-for-discord' ),
 				array( 'status' => 403 )
 			);
 		}
 
-		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+		// Try our custom nonce fails, otherwise use the WordPress default REST nonce.
+		$custom_nonce_valid  = wp_verify_nonce( $nonce, 'dro_ccbb_nonce' );
+		$wp_rest_nonce_valid = false;
+		if ( ! $custom_nonce_valid ) {
+			$wp_rest_nonce_valid = wp_verify_nonce( $nonce, 'wp_rest' );
+		}
+		if ( ! $custom_nonce_valid && ! $wp_rest_nonce_valid ) {
 			return new WP_Error(
 				'invalid_nonce',
-				__( 'Invalid security token. Please refresh the page and try again.', 'all-in-one-discord-connect-block' ),
+				esc_html__( 'Invalid security token. Please refresh the page and try again.', 'custom-connect-button-block-for-discord' ),
 				array( 'status' => 403 )
 			);
 		}
@@ -191,14 +196,14 @@ class Dro_AIO_Discord_Rest_Api {
 			return true;
 		}
 
-		// For non-admin users, ensure they can at least read
+		// For non-admin users, ensure they can at least read.
 		if ( current_user_can( 'read' ) ) {
 			return true;
 		}
 
 		return new WP_Error(
 			'insufficient_permissions',
-			__( 'You do not have sufficient permissions to access this endpoint.', 'all-in-one-discord-connect-block' ),
+			esc_html__( 'You do not have sufficient permissions to access this endpoint.', 'custom-connect-button-block-for-discord' ),
 			array( 'status' => 403 )
 		);
 	}
@@ -207,7 +212,7 @@ class Dro_AIO_Discord_Rest_Api {
 	 * Get Discord service icons.
 	 *
 	 * Returns the official icon URL from the WordPress plugin repository.
-	 * Endpoint: GET /wp-json/aio-discord/v1/icons
+	 * Endpoint: GET /wp-json/dro-ccbb/v1/icons
 	 *
 	 * @since 1.0.0
 	 * @param WP_REST_Request $request The REST request object
@@ -215,12 +220,12 @@ class Dro_AIO_Discord_Rest_Api {
 	 */
 	public function get_icons( WP_REST_Request $request ) {
 		try {
-			$active_service = Discord_Resolver::get_active_service();
+			$active_service = Resolver::get_active_service();
 
-			if ( ! $active_service instanceof Discord_Service_Interface ) {
+			if ( ! $active_service instanceof Service_Interface ) {
 				return new WP_Error(
 					'no_active_service',
-					__( 'No active Discord service found.', 'all-in-one-discord-connect-block' ),
+					esc_html__( 'No active Discord service found.', 'custom-connect-button-block-for-discord' ),
 					array( 'status' => 404 )
 				);
 			}
@@ -229,7 +234,7 @@ class Dro_AIO_Discord_Rest_Api {
 			if ( empty( $service_icon ) ) {
 				return new WP_Error(
 					'no_icon_available',
-					__( 'No icon available for the active service.', 'all-in-one-discord-connect-block' ),
+					esc_html__( 'No icon available for the active service.', 'custom-connect-button-block-for-discord' ),
 					array( 'status' => 404 )
 				);
 			}
@@ -237,7 +242,7 @@ class Dro_AIO_Discord_Rest_Api {
 			if ( ! filter_var( $service_icon, FILTER_VALIDATE_URL ) ) {
 				return new WP_Error(
 					'invalid_icon_url',
-					__( 'Invalid icon URL returned from service.', 'all-in-one-discord-connect-block' ),
+					esc_html__( 'Invalid icon URL returned from service.', 'custom-connect-button-block-for-discord' ),
 					array( 'status' => 500 )
 				);
 			}
@@ -263,7 +268,7 @@ class Dro_AIO_Discord_Rest_Api {
 		} catch ( Exception $e ) {
 			return new WP_Error(
 				'internal_error',
-				__( 'An internal error occurred while fetching the icon.', 'all-in-one-discord-connect-block' ),
+				esc_html__( 'An internal error occurred while fetching the icon.', 'custom-connect-button-block-for-discord' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -272,7 +277,7 @@ class Dro_AIO_Discord_Rest_Api {
 	/**
 	 * Get comprehensive service information.
 	 *
-	 * Endpoint: GET /wp-json/aio-discord/v1/service-info
+	 * Endpoint: GET /wp-json/dro-ccbb/v1/service-info
 	 *
 	 * @since 1.0.0
 	 * @param WP_REST_Request $request The REST request object
@@ -280,11 +285,11 @@ class Dro_AIO_Discord_Rest_Api {
 	 */
 	public function get_service_info( WP_REST_Request $request ) {
 		try {
-			$active_service = Discord_Resolver::get_active_service();
-			if ( ! $active_service instanceof Discord_Service_Interface ) {
+			$active_service = Resolver::get_active_service();
+			if ( ! $active_service instanceof Service_Interface ) {
 				return new WP_Error(
 					'no_active_service',
-					__( 'No active Discord service found.', 'all-in-one-discord-connect-block' ),
+					esc_html__( 'No active Discord service found.', 'custom-connect-button-block-for-discord' ),
 					array( 'status' => 404 )
 				);
 			}
@@ -318,7 +323,7 @@ class Dro_AIO_Discord_Rest_Api {
 		} catch ( Exception $e ) {
 			return new WP_Error(
 				'internal_error',
-				__( 'An internal error occurred while fetching service information.', 'all-in-one-discord-connect-block' ),
+				esc_html__( 'An internal error occurred while fetching service information.', 'custom-connect-button-block-for-discord' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -343,8 +348,8 @@ class Dro_AIO_Discord_Rest_Api {
 	 */
 	public function is_service_available(): bool {
 		try {
-			$active_service = Discord_Resolver::get_active_service();
-			return $active_service instanceof Discord_Service_Interface;
+			$active_service = Resolver::get_active_service();
+			return $active_service instanceof Service_Interface;
 		} catch ( Exception $e ) {
 			return false;
 		}
@@ -365,11 +370,12 @@ class Dro_AIO_Discord_Rest_Api {
 			'droDiscordApi',
 			array(
 				'apiUrl'    => rest_url( self::API_NAMESPACE ),
-				'nonce'     => wp_create_nonce( 'wp_rest' ),
+				'nonce'     => wp_create_nonce( 'dro_ccbb_nonce' ),
 				'endpoints' => array(
-					'icons'       => rest_url( self::API_NAMESPACE . '/icons' ),
-					'serviceInfo' => rest_url( self::API_NAMESPACE . '/service-info' ),
+					'icons'       => sprintf( '/%s/icons', self::API_NAMESPACE ),
+					'serviceInfo' => sprintf( '/%s/service-info', self::API_NAMESPACE ),
 				),
+
 			)
 		);
 	}

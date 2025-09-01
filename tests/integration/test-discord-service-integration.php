@@ -2,13 +2,13 @@
 /**
  * Integration tests for Dro_AIO_Discord_Service abstract class.
  *
- * @package Dro\AIODiscordBlock\Tests\Integration
+ * @package CustomConnectButtonBlock\Tests\Integration
  */
 
-namespace Dro\AIODiscordBlock\Tests\Integration;
+namespace CustomConnectButtonBlock\Tests\Integration;
 
-use Dro\AIODiscordBlock\Abstracts\Dro_AIO_Discord_Service;
-use Dro\AIODiscordBlock\Tests\Helpers\Discord_Service_Mock_Helper;
+use Dro\CustomConnectButtonBlock\Abstracts\Dro_AIO_Discord_Service;
+use Dro\CustomConnectButtonBlock\Tests\Helpers\Discord_Service_Mock_Helper;
 use WP_UnitTestCase;
 
 /**

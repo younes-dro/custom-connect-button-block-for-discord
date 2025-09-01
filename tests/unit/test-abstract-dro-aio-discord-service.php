@@ -2,12 +2,12 @@
 /**
  * Tests for Dro_AIO_Discord_Service abstract class.
  *
- * @package Dro\AIODiscordBlock\Tests
+ * @package CustomConnectButtonBlock\Tests
  */
 
-namespace Dro\AIODiscordBlock\Tests\Unit;
+namespace CustomConnectButtonBlock\Tests\Unit;
 
-use Dro\AIODiscordBlock\includes\Abstracts\Dro_AIO_Discord_Service;
+use Dro\CustomConnectButtonBlock\includes\Abstracts\Dro_AIO_Discord_Service;
 
 
 /**

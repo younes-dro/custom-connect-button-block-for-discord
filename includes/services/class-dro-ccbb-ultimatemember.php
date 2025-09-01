@@ -4,7 +4,7 @@
  *
  * Handles Discord integration for Ultimate Member plugin.
  *
- * @package  Dro\AIODiscordBlock\Services
+ * @package  CustomConnectButtonBlock\Services
  * @category Plugin
  * @author   Younes DRO
  * @license  GPL-2.0-or-later
@@ -13,10 +13,11 @@
 
 declare(strict_types=1);
 
-namespace Dro\AIODiscordBlock\includes\Services;
+namespace Dro\CustomConnectButtonBlock\includes\Services;
 
-use Dro\AIODiscordBlock\includes\Abstracts\Dro_AIO_Discord_Service as Discord_Service;
-use Dro\AIODiscordBlock\includes\Interfaces\Dro_AIO_Discord_Service_Interface as Discord_Service_Interface;
+use Dro\CustomConnectButtonBlock\includes\Abstracts\Dro_CCBB_Service as Abstract_Service;
+use Dro\CustomConnectButtonBlock\includes\Interfaces\Dro_CCBB_Service_Interface as Service_Interface;
+use Dro\CustomConnectButtonBlock\includes\helpers\Dro_CCBB_Helper as Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -27,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-class Dro_AIO_Discord_UltimateMember extends Discord_Service implements Discord_Service_Interface {
+class Dro_CCBB_UltimateMember extends Abstract_Service implements Service_Interface {
 
 	/**
 	 * The singleton instance.
@@ -59,7 +60,7 @@ class Dro_AIO_Discord_UltimateMember extends Discord_Service implements Discord_
 	 * @since 1.0.0
 	 * @var string
 	 */
-	private const PLUGIN_ICON = DRO_AIO_DISCORD_BLOCK_URL . '/assets/' . self::SERVICE_NAME . '.png';
+	private const PLUGIN_ICON = DRO_CCBB_URL . '/assets/' . self::SERVICE_NAME . '.png';
 
 	/**
 	 * Mapping of logical Discord meta keys to their Ultimate Member add-on user_meta keys.
@@ -95,10 +96,10 @@ class Dro_AIO_Discord_UltimateMember extends Discord_Service implements Discord_
 
 		$cloning_message = sprintf(
 			/* translators: %s is the class name that cannot be cloned */
-			esc_html__( 'You cannot clone instance of %s', 'all-in-one-discord-connect-block' ),
+			esc_html__( 'You cannot clone instance of %s', 'custom-connect-button-block-for-discord' ),
 			get_class( $this )
 		);
-		_doing_it_wrong( __FUNCTION__, esc_html( $cloning_message ), esc_html( DRO_AIO_DISCORD_BLOCK_VERSION ) );
+		_doing_it_wrong( __FUNCTION__, esc_html( $cloning_message ), esc_html( DRO_CCBB_VERSION ) );
 	}
 
 	/**
@@ -111,19 +112,19 @@ class Dro_AIO_Discord_UltimateMember extends Discord_Service implements Discord_
 
 		$unserializing_message = sprintf(
 			/* translators: %s is the class name that cannot be unserialized */
-			esc_html__( 'You cannot unserialize instance of %s', 'all-in-one-discord-connect-block' ),
+			esc_html__( 'You cannot unserialize instance of %s', 'custom-connect-button-block-for-discord' ),
 			get_class( $this )
 		);
-		_doing_it_wrong( __FUNCTION__, esc_html( $unserializing_message ), esc_html( DRO_AIO_DISCORD_BLOCK_VERSION ) );
+		_doing_it_wrong( __FUNCTION__, esc_html( $unserializing_message ), esc_html( DRO_CCBB_VERSION ) );
 	}
 
 	/**
 	 * Return the singleton instance of this service.
 	 *
 	 * @since 1.0.0
-	 * @return Discord_Service_Interface
+	 * @return Service_Interface
 	 */
-	public static function get_instance(): Discord_Service_Interface {
+	public static function get_instance(): Service_Interface {
 		return self::$instance ?? new self();
 	}
 
@@ -251,10 +252,11 @@ class Dro_AIO_Discord_UltimateMember extends Discord_Service implements Discord_
 	private function get_connect_button( string $button_bg_color, string $button_text_color, string $button_text ): string {
 
 		return sprintf(
-			'<a href="?action=ultimate-discord" class="dro-aio-discord-connect-button" style="background-color:%s; color:%s;">%s <i class="fab fa-discord"></i></a>',
+			'<a href="?action=ultimate-discord" class="dro-ccbb-connect-button" style="background-color:%s; color:%s;">%s <i>%s</i></a>',
 			esc_attr( $button_bg_color ),
 			esc_attr( $button_text_color ),
-			esc_html( $button_text )
+			esc_html( $button_text ),
+			wp_kses( Helper::get_discord_icon(), Helper::get_allowed_html() )
 		);
 	}
 
@@ -276,11 +278,12 @@ class Dro_AIO_Discord_UltimateMember extends Discord_Service implements Discord_
 		wp_enqueue_style( 'ultimate-member-discord-add-on' );
 
 		$button_html = sprintf(
-			'<a href="#" class="dro-aio-discord-disconnect-button" id="ultimate-member-disconnect-discord" data-user-id="%s" style="background-color:%s; color:%s;">%s <i class="fab fa-discord"></i></a>',
+			'<a href="#" class="dro-ccbb-disconnect-button" id="ultimate-member-disconnect-discord" data-user-id="%s" style="background-color:%s; color:%s;">%s <i>%s</i></a>',
 			esc_attr( $user_id ),
 			esc_attr( $button_bg_color ),
 			esc_attr( $button_text_color ),
-			esc_html( $button_text )
+			esc_html( $button_text ),
+			wp_kses( Helper::get_discord_icon(), Helper::get_allowed_html() )
 		);
 
 		return $button_html . '<span class="ets-spinner"></span>';
@@ -318,8 +321,8 @@ class Dro_AIO_Discord_UltimateMember extends Discord_Service implements Discord_
 
 		$default_role                            = sanitize_text_field( trim( get_option( 'ets_ultimatemember_discord_default_role_id' ) ) );
 		$ets_ultimatemember_discord_role_mapping = json_decode( get_option( 'ets_ultimatemember_discord_role_mapping' ), true );
-		$all_roles                               = unserialize( get_option( 'ets_ultimatemember_discord_all_roles' ) );
-		$roles_color                             = unserialize( get_option( 'ets_ultimatemember_discord_roles_color' ) );
+		$all_roles                               = maybe_unserialize( get_option( 'ets_ultimatemember_discord_all_roles' ) );
+		$roles_color                             = maybe_unserialize( get_option( 'ets_ultimatemember_discord_roles_color' ) );
 		$curr_level_id                           = ets_ultimatemember_discord_get_current_level_id( $user_id );
 		$user_roles_html                         = '';
 		$mapped_role_name                        = '';
