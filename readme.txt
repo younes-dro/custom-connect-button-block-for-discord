@@ -71,11 +71,12 @@ Yes. You can set the button’s text, colors, and text directly in the Gutenberg
 Yes. The block includes a Play/Stop toggle that renders the live frontend output instantly inside the editor.
 
 == Screenshots ==
-1. Initial block status - buttons + text
-2. Enable live preview for non-connected user
-3. Live preview for connected user to Discord
-4. The button text placeholder settings
-5. The color settings for buttons: front color and background color
+1. Animated demo showcasing all block features in action.
+2. Enable live preview for non-connected user.
+3. Live preview for connected user to Discord.
+4. The button text placeholder settings.
+5. The color settings for buttons: front color and background color.
+6. Initial block status - buttons + text.
 
 == Changelog ==
 
